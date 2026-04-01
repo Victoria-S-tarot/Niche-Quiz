@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Fool — Tarot Made Simple Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --deep-navy: #0d0e2a; --violet: #6b3fa0; --gold: #e8c84a;
+    --gold-light: #f5df8a; --gold-dim: #b8981a; --cream: #fdf6e8; --white: #ffffff;
+  }
+  body {
+    background-color: var(--deep-navy);
+    background-image:
+      radial-gradient(ellipse at 50% 0%, #2a1a5e 0%, transparent 65%),
+      radial-gradient(ellipse at 20% 80%, #1a0a3a 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 60%, #0a1a3a 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='1' fill='white' opacity='0.3'/%3E%3Ccircle cx='50' cy='30' r='0.5' fill='white' opacity='0.4'/%3E%3Ccircle cx='90' cy='15' r='1.2' fill='white' opacity='0.2'/%3E%3Ccircle cx='130' cy='45' r='0.7' fill='white' opacity='0.35'/%3E%3Ccircle cx='170' cy='20' r='1' fill='white' opacity='0.25'/%3E%3Ccircle cx='30' cy='70' r='0.8' fill='white' opacity='0.3'/%3E%3Ccircle cx='75' cy='90' r='1.1' fill='white' opacity='0.2'/%3E%3Ccircle cx='150' cy='80' r='0.6' fill='white' opacity='0.4'/%3E%3Ccircle cx='20' cy='130' r='0.9' fill='white' opacity='0.35'/%3E%3Ccircle cx='110' cy='120' r='1.3' fill='white' opacity='0.2'/%3E%3Ccircle cx='60' cy='170' r='1' fill='white' opacity='0.25'/%3E%3Ccircle cx='185' cy='175' r='1.1' fill='white' opacity='0.2'/%3E%3C/svg%3E");
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    font-family: 'Lora', Georgia, serif; padding: 2rem 1rem;
+  }
+  .container { max-width: 700px; width: 100%; animation: rise 0.9s ease both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .header { text-align: center; margin-bottom: 1.5rem; }
+  .brand { font-family: 'Cinzel', serif; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.28em; color: var(--gold); text-transform: uppercase; opacity: 0.75; }
+  .star-divider { color: var(--gold); font-size: 0.9rem; letter-spacing: 0.5em; margin: 0.4rem 0; opacity: 0.5; }
+  .title { font-family: 'Cinzel', serif; font-size: clamp(1.7rem, 5vw, 2.5rem); font-weight: 700; color: var(--gold-light); text-shadow: 0 0 30px rgba(232,200,74,0.5), 0 0 60px rgba(232,200,74,0.2); letter-spacing: 0.05em; }
+  .subtitle { font-style: italic; color: rgba(255,255,255,0.5); font-size: 0.92rem; margin-top: 0.4rem; }
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-info { display: flex; justify-content: space-between; font-family: 'Cinzel', serif; font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(232,200,74,0.55); margin-bottom: 0.4rem; }
+  .progress-bar-bg { height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--violet), var(--gold)); border-radius: 2px; transition: width 0.5s ease; }
+  .quiz-card { background: linear-gradient(145deg, rgba(26,32,96,0.95) 0%, rgba(13,14,42,0.98) 100%); border: 1px solid rgba(232,200,74,0.22); border-radius: 16px; padding: 2rem; box-shadow: 0 0 0 1px rgba(232,200,74,0.07), 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(232,200,74,0.08); position: relative; overflow: hidden; }
+  .quiz-card::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 300px; height: 200px; background: radial-gradient(ellipse, rgba(107,63,160,0.12) 0%, transparent 70%); pointer-events: none; }
+  .question-num { font-family: 'Cinzel', serif; font-size: 0.63rem; letter-spacing: 0.2em; color: var(--gold); opacity: 0.55; text-transform: uppercase; margin-bottom: 0.6rem; }
+  .question-text { font-size: 1.05rem; font-weight: 500; color: var(--cream); line-height: 1.65; margin-bottom: 1.4rem; }
+  .options { display: flex; flex-direction: column; gap: 0.7rem; }
+  .option { display: flex; align-items: center; gap: 0.9rem; padding: 0.8rem 1rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(232,200,74,0.13); border-radius: 10px; cursor: pointer; transition: all 0.22s ease; text-align: left; width: 100%; font-family: 'Lora', serif; font-size: 0.93rem; color: rgba(255,255,255,0.78); }
+  .option:hover:not(:disabled) { background: rgba(107,63,160,0.18); border-color: rgba(232,200,74,0.38); color: var(--white); transform: translateX(4px); }
+  .option-letter { font-family: 'Cinzel', serif; font-size: 0.72rem; font-weight: 600; color: var(--gold); background: rgba(232,200,74,0.09); border: 1px solid rgba(232,200,74,0.22); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .option.correct { background: rgba(74,167,80,0.14); border-color: rgba(74,167,80,0.48); color: #a8e6ab; }
+  .option.correct .option-letter { background: rgba(74,167,80,0.25); border-color: rgba(74,167,80,0.55); color: #a8e6ab; }
+  .option.incorrect { background: rgba(180,50,50,0.14); border-color: rgba(180,50,50,0.38); color: rgba(255,150,150,0.8); }
+  .option.incorrect .option-letter { background: rgba(180,50,50,0.18); border-color: rgba(180,50,50,0.38); color: rgba(255,150,150,0.8); }
+  .option:disabled { cursor: default; transform: none; }
+  .explanation { margin-top: 0.9rem; padding: 0.8rem 1rem; background: rgba(232,200,74,0.05); border-left: 3px solid var(--gold-dim); border-radius: 0 8px 8px 0; font-size: 0.86rem; font-style: italic; color: rgba(255,255,255,0.65); line-height: 1.65; display: none; }
+  .explanation.show { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .btn-next { margin-top: 1.4rem; width: 100%; padding: 0.88rem; background: linear-gradient(135deg, var(--violet), #2a1060); border: 1px solid rgba(232,200,74,0.28); border-radius: 10px; color: var(--gold-light); font-family: 'Cinzel', serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.15em; cursor: pointer; transition: all 0.3s ease; display: none; text-transform: uppercase; }
+  .btn-next.show { display: block; animation: fadeIn 0.4s ease; }
+  .btn-next:hover { background: linear-gradient(135deg, #8a50c0, #3d1880); box-shadow: 0 0 20px rgba(107,63,160,0.4); transform: translateY(-1px); }
+  .results { text-align: center; display: none; animation: rise 0.6s ease both; }
+  .results.show { display: block; }
+  .result-icon { font-size: 2.8rem; margin-bottom: 0.8rem; }
+  .result-title { font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; color: var(--gold-light); text-shadow: 0 0 20px rgba(232,200,74,0.35); margin-bottom: 0.4rem; }
+  .result-score { font-family: 'Cinzel', serif; font-size: 2.6rem; font-weight: 700; color: var(--white); margin: 0.4rem 0; }
+  .result-score span { font-size: 1.1rem; color: rgba(255,255,255,0.38); }
+  .score-stars { font-size: 1.3rem; letter-spacing: 0.2em; margin-bottom: 0.8rem; color: var(--gold); }
+  .result-message { font-size: 0.97rem; color: rgba(255,255,255,0.68); line-height: 1.75; margin: 1rem 0 1.5rem; font-style: italic; }
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(232,200,74,0.28), transparent); margin: 1.1rem 0; }
+  .btn-retake { padding: 0.82rem 2rem; background: transparent; border: 1px solid rgba(232,200,74,0.38); border-radius: 10px; color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.15em; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; }
+  .btn-retake:hover { background: rgba(232,200,74,0.07); box-shadow: 0 0 15px rgba(232,200,74,0.18); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="brand">Tarot Made Simple</div>
+    <div class="star-divider">✦ ✦ ✦</div>
+    <h1 class="title">The Fool</h1>
+    <p class="subtitle">Let's see what you remember from the lesson</p>
+  </div>
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-info">
+      <span id="progressText">Question 1 of 6</span>
+      <span id="scoreText">Score: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="quiz-card">
+    <div id="quizArea">
+      <div class="question-num" id="questionNum">Question 1 of 6</div>
+      <div class="question-text" id="questionText"></div>
+      <div class="options" id="optionsArea"></div>
+      <div class="explanation" id="explanation"></div>
+      <button class="btn-next" id="btnNext" onclick="nextQuestion()">Continue →</button>
+    </div>
+    <div class="results" id="resultsArea">
+      <div class="result-icon" id="resultIcon"></div>
+      <div class="result-title" id="resultTitle"></div>
+      <div class="score-stars" id="scoreStars"></div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="divider"></div>
+      <div class="result-message" id="resultMessage"></div>
+      <button class="btn-retake" onclick="restartQuiz()">✦ Try Again ✦</button>
+    </div>
+  </div>
+</div>
+<script>
+const questions = [
+  {
+    question: "The Fool stands at the edge of a cliff with one foot already raised. What do these two things together tell you?",
+    options: [
+      "They have carefully planned this moment and are ready",
+      "A beginning is already happening — and it comes with real risk",
+      "They are about to make a serious mistake they will regret",
+      "They have reached the end of a long and difficult journey"
+    ],
+    correct: 1,
+    explanation: "The cliff is the unknown and the risk. The raised foot means the beginning is already in motion. Together they say: this is the moment before you fully understand what you're stepping into — and you go anyway."
+  },
+  {
+    question: "The Fool is looking upward at the sky rather than down at the cliff. What does this tell us?",
+    options: [
+      "They are spiritually connected and guided from above",
+      "They are dreaming of the future and excited about what's ahead",
+      "Their focus is on possibility — but they are not paying attention to the immediate danger",
+      "They are asking for help before taking the next step"
+    ],
+    correct: 2,
+    explanation: "Looking up shows focus on possibility and openness — but it also means the Fool is not looking at where they're about to step. That's the tension in this card: optimism and lack of awareness living right next to each other."
+  },
+  {
+    question: "The Fool carries a small bag on a stick. What does that small bag represent?",
+    options: [
+      "Everything they have worked hard to accumulate over time",
+      "Minimal baggage and limited experience — only the essentials",
+      "The memories and relationships they are leaving behind",
+      "Practical supplies carefully chosen for the road ahead"
+    ],
+    correct: 1,
+    explanation: "The small bag represents minimal baggage and limited experience. This isn't someone who's done this before — they're carrying just enough and nothing more. That's part of what makes this a beginning."
+  },
+  {
+    question: "There is a small dog at the Fool's heels. What does the dog represent?",
+    options: [
+      "A loyal companion who will guide them safely on the journey",
+      "Instinct and natural awareness reacting to the situation — but it does not control the Fool",
+      "The voice of other people warning them not to proceed",
+      "Playfulness and the joy of living without worry"
+    ],
+    correct: 1,
+    explanation: "The dog represents instinct — a natural awareness that something is happening. It reacts to the situation, but it doesn't stop the Fool. The awareness is there; whether it's listened to is another matter."
+  },
+  {
+    question: "The sun shines brightly above The Fool. What does it symbolise in this card?",
+    options: [
+      "The presence of a higher power watching over and protecting them",
+      "That the timing of this decision is perfectly aligned",
+      "Vitality, optimism, and life force — positive energy even on an uncertain path",
+      "Clarity — the Fool can see exactly what lies ahead"
+    ],
+    correct: 2,
+    explanation: "The sun represents vitality, optimism, and life force. It doesn't mean the path is safe or known — it means there is genuine energy and positive force present, even in the uncertainty."
+  },
+  {
+    question: "When The Fool appears reversed, it can show two very different but equally stuck energies. Which answer captures both?",
+    options: [
+      "Moving too quickly, or being too focused on a single outcome",
+      "Recklessness with no awareness of consequences, or too much fear to take the first step at all",
+      "Overconfidence in your abilities, or relying too heavily on others",
+      "Acting without a plan, or planning so much that nothing gets done"
+    ],
+    correct: 1,
+    explanation: "Reversed, The Fool tips to either extreme — rushing forward with no awareness of real risk, or being so afraid of the unknown that the first step never happens. Too little awareness, or too much fear to move at all."
+  }
+];
+
+let current = 0, score = 0, answered = false;
+
+function renderQuestion() {
+  const q = questions[current];
+  answered = false;
+  document.getElementById('questionNum').textContent = `Question ${current + 1} of ${questions.length}`;
+  document.getElementById('progressText').textContent = `Question ${current + 1} of ${questions.length}`;
+  document.getElementById('scoreText').textContent = `Score: ${score}`;
+  document.getElementById('progressFill').style.width = `${(current / questions.length) * 100}%`;
+  document.getElementById('questionText').textContent = q.question;
+  const optArea = document.getElementById('optionsArea');
+  optArea.innerHTML = '';
+  ['A','B','C','D'].forEach((letter, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letter}</span>${q.options[i]}`;
+    btn.onclick = () => selectAnswer(i);
+    optArea.appendChild(btn);
+  });
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').textContent = '';
+  document.getElementById('btnNext').className = 'btn-next';
+}
+
+function selectAnswer(index) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const buttons = document.querySelectorAll('.option');
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === index && i !== q.correct) btn.classList.add('incorrect');
+  });
+  if (index === q.correct) score++;
+  const exp = document.getElementById('explanation');
+  exp.textContent = q.explanation;
+  exp.className = 'explanation show';
+  document.getElementById('btnNext').className = 'btn-next show';
+  document.getElementById('scoreText').textContent = `Score: ${score}`;
+}
+
+function nextQuestion() {
+  current++;
+  if (current < questions.length) { renderQuestion(); } else { showResults(); }
+}
+
+function showResults() {
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('quizArea').style.display = 'none';
+  document.getElementById('progressWrap').style.display = 'none';
+  const pct = score / questions.length;
+  let icon, title, stars, message;
+  if (pct === 1) {
+    icon = '🌟'; title = "You've got The Fool"; stars = '★ ★ ★ ★ ★';
+    message = "Perfect score — every symbol, both meanings, all of it. You really understand this card now, not just the keywords. On to the next one.";
+  } else if (pct >= 0.66) {
+    icon = '✨'; title = "Really solid"; stars = '★ ★ ★ ★ ☆';
+    message = "Most of this has landed well. Take a quick look back at the ones that caught you out and you'll have this card fully in your toolkit.";
+  } else if (pct >= 0.33) {
+    icon = '🌙'; title = "Keep going"; stars = '★ ★ ★ ☆ ☆';
+    message = "Some of it's clicking and some wants another look. Head back to the lesson, sit with the imagery again, and come back when you're ready. No rush.";
+  } else {
+    icon = '🕯️'; title = "Every journey starts here"; stars = '★ ☆ ☆ ☆ ☆';
+    message = "Don't worry about it — go back to the lesson, take your time with each symbol, and try again when it feels right. The Fool doesn't judge a slow start.";
+  }
+  document.getElementById('resultIcon').textContent = icon;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('scoreStars').textContent = stars;
+  document.getElementById('resultScore').innerHTML = `${score} <span>out of ${questions.length}</span>`;
+  document.getElementById('resultMessage').textContent = message;
+  document.getElementById('resultsArea').className = 'results show';
+}
+
+function restartQuiz() {
+  current = 0; score = 0;
+  document.getElementById('quizArea').style.display = 'block';
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('resultsArea').className = 'results';
+  renderQuestion();
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
